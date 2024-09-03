@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <title>Memory Game</title>
+  <link rel="shortcut icon" type="image/ico" href="./img/favicon.ico" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Memory Game</h1>
+    </header>
+
+    <!--Start modal section-->
+    <section class="start-game-modal">
+      <div id="start-modal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <h2>Welcome!</h2>
+          <p>Choose the game mode</p>
+          <div class="modal-content-options">
+            <button class="btn play-again-btn" id="easyGame">Easy</button>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal section-->
+
+    <section class="win-game-modal">
+        <ul id="star-rating" class="star-rating">
+          <li class="star"><i class="fa fa-star fa-lg"></i></li>
+          <li class="star"><i class="fa fa-star fa-lg"></i></li>
+          <li class="star"><i class="fa fa-star fa-lg"></i></li>
+        </ul>
+        <span>
+          <span class="moves-counter">0</span>
+          Moves
+        </span>
+        <button class="btn reset-btn">
+          <i class="fa fa-repeat"></i>
+        </button>
+      </section>
+
+      <div id="modal" class="modal win">
+        <!-- Modal content -->
+        <div class="modal-content" id="win-modal-content">
+          <div id="modal-details">
+
+            <h2>Congratulations!</h2>
+
+            <img class="modal-img" src="img/thumb_up.jpeg" alt="Vault boy giving the thumbs up from the game fall out" />
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <ul class="deck"></ul>
+  </div>
+  <script src="js/index.js"></script>
+</body>
+
+</html>

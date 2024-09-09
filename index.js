@@ -63,7 +63,7 @@ function shuffle(array) {
   }
   return array;
 }
-
+let lastFlippedCardNumber = null;
 function startGame() {
   let cards;
   if (gameMode === "easy") {
@@ -91,7 +91,7 @@ function startGame() {
     const divTag = document.createElement("DIV");
     divTag.classList.add("tilt");
     divTag.appendChild(liTag);
-
+    numberTag.style.opacity = "1";
     updateReflection(liTag, 100, 0);
     liTag.addEventListener("mousemove", (event) => {
       const scale = 0.03;
@@ -107,10 +107,21 @@ function startGame() {
     });
 
     liTag.addEventListener("click", (event) => {
-      liTag.style.transform = `rotateY(180deg)`;
+      if (lastFlippedCardNumber === null || lastFlippedCardNumber - 1 === shuffledDeck[i]) {
+        liTag.style.transform = `rotateY(180deg)`;
+        lastFlippedCardNumber = shuffledDeck[i];
+      } else {
+        numberTag.style.opacity = "0"; // Hide the number if it's not the correct card
+      }
     });
     deck.appendChild(divTag);
   }
+    setTimeout(() => {
+    const allNumbers = document.querySelectorAll(".card-number");
+    allNumbers.forEach(number => {
+      number.style.opacity = "0";
+    });
+  }, 4000);
 }
 
 function removeCard() {
@@ -151,14 +162,14 @@ function resetEverything() {
   seconds = 0;
   minutes = 0;
   timeCounter.innerHTML = "00:00";
-  // Reset star count and the add the class back to show stars again
+
   star[1].firstElementChild.classList.add("fa-star");
   star[2].firstElementChild.classList.add("fa-star");
   starCount = 3;
-  // Reset moves count and reset its inner HTML
+
   moves = 0;
   movesCount.innerHTML = 0;
-  // Clear both arrays that hold the opened and matched cards
+
   matched = [];
   opened = [];
   // Clear the deck
@@ -190,22 +201,37 @@ function compareTwo() {
   if (opened.length === 2) {
     document.body.style.pointerEvents = "none";
   }
-  if (opened.length === 2 && opened[0].src === opened[1].src) {
+  // Get the card numbers
+  const cardNumber1 = Number(opened[0].textContent);
+  const cardNumber2 = Number(opened[1].textContent);
+
+  if (cardNumber1 === cardNumber2 - 1) {
     match();
-  } else if (opened.length === 2 && opened[0].src != opened[1].src) {
+  } else if (cardNumber1 !== cardNumber2 - 1) {
     noMatch();
   }
 }
 
 function match() {
-
   setTimeout(function () {
     opened[0].parentElement.classList.add("match");
     opened[1].parentElement.classList.add("match");
-    // Push the matched cards to the matched array
+
     matched.push(...opened);
     document.body.style.pointerEvents = "auto";
-    winGame();
+
+    const isIncreasingOrder = matched.every((card, index, arr) => {
+      if (index === 0) {
+        return true;
+      } else {
+        return Number(card.textContent) > Number(arr[index - 1].textContent);
+      }
+    });
+
+    if (isIncreasingOrder) {
+      winGame();
+    }
+
     opened = [];
   }, 600);
   movesCounter();
@@ -214,9 +240,20 @@ function match() {
 
 function noMatch() {
   setTimeout(function () {
-    // Remove class flip on images parent element
-    opened[0].parentElement.classList.remove("flip");
-    opened[1].parentElement.classList.remove("flip");
+    // Get the card numbers
+    const cardNumber1 = Number(opened[0].textContent);
+    const cardNumber2 = Number(opened[1].textContent);
+
+    // Check if the card numbers are not consecutive
+    if (Math.abs(cardNumber1 - cardNumber2) !== 1) {
+      // Remove class flip on images parent element
+      opened[0].parentElement.classList.remove("flip");
+      opened[1].parentElement.classList.remove("flip");
+      // Hide the card numbers
+      opened[0].style.opacity = "0";
+      opened[1].style.opacity = "0";
+    }
+
     // Allow further mouse clicks on cards
     document.body.style.pointerEvents = "auto";
     // Remove the cards from opened array
